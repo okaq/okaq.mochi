@@ -1,0 +1,2 @@
+# okaq.mochi
+ideas view
