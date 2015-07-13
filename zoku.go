@@ -113,6 +113,11 @@ func Dir() {
     // scanner.Text()
 }
 
+func StatHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Println(r)
+    w.Write([]byte("stats live"))
+}
+
 func Web() {
     fmt.Println("listening...")
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -120,6 +125,7 @@ func Web() {
         fmt.Println(r)
     })
     // register other handlers
+    http.HandleFunc("/s", StatHandler)
     err := http.ListenAndServe(":8008", nil)
     if err != nil {
         fmt.Println(err)
