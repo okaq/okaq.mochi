@@ -101,7 +101,8 @@ func Dir() {
     if err0 != nil {
         fmt.Println(err0)
     }
-    fmt.Println(path, b0, string(b0))
+    // fmt.Println(path, b0, string(b0))
+    fmt.Println(len(b0))
     // new line byte = 10
 
     // read line by line
@@ -113,15 +114,16 @@ func Dir() {
 }
 
 func Web() {
+    fmt.Println("listening...")
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, "boki.html")
         fmt.Println(r)
     })
+    // register other handlers
     err := http.ListenAndServe(":8008", nil)
     if err != nil {
         fmt.Println(err)
     }
-    // fmt.Println("web server started on port 8008")
 }
 
 func main() {
@@ -136,7 +138,7 @@ func main() {
     Save()
     fmt.Printf("Opening dir: %s.\n", ZUKI)
     Dir()
+    fmt.Println("starting web server on port 8008")
     Web()
-    fmt.Println("web server started on port 8008")
     // thread wait after listen is called
 }
