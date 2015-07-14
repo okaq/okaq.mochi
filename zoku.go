@@ -7,6 +7,7 @@ import (
     "math/rand"
     // "os"
     "net/http"
+    "runtime"
     "time"
 )
 
@@ -115,7 +116,14 @@ func Dir() {
 
 func StatHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Println(r)
-    w.Write([]byte("stats live"))
+    // w.Write([]byte("stats live"))
+    ms := &runtime.MemStats{}
+    runtime.ReadMemStats(ms)
+    b0, err := json.Marshal(ms)
+    if err != nil {
+        fmt.Println(err)
+    }
+    w.Write(b0)
 }
 
 func Web() {
