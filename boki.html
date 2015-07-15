@@ -37,6 +37,9 @@ var xhr = {
     "init": function() {
         xhr.s = new XMLHttpRequest();
         xhr.s.onload = xhr.load;
+        // get list of navi titles
+        // retrieve txt on click
+        // display result
     },
     "load": function(e) {
         console.log("xhr req loaded...");
@@ -44,7 +47,8 @@ var xhr = {
         console.log(xhr.s.response);
     },
     "open": function() {
-        xhr.s.open("GET", "http://localhost:8008/s", true);
+        // xhr.s.open("GET", "http://localhost:8008/s", true);
+        xhr.s.open("GET", "http://localhost:8008/i", true)
         xhr.s.send();
     }
 }

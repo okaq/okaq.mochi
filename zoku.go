@@ -5,7 +5,7 @@ import (
     "fmt"
     "io/ioutil"
     "math/rand"
-    // "os"
+    "os"
     "net/http"
     "runtime"
     "time"
@@ -22,6 +22,8 @@ var (
     Now time.Time
     Start *Starts
     Rng *rand.Rand
+    Fi []os.FileInfo
+    Ideas []*Idea
 )
 
 type Starts struct {
@@ -47,6 +49,16 @@ func (s *Starts) Now() {
 
 func (s *Starts) Rand() byte {
     return byte(Rng.Intn(255))
+}
+
+type Idea struct {
+    Path string
+    Date string
+    Txt []byte
+}
+
+func NewIdea() *Idea {
+    return &Idea{}
 }
 
 func Load() {
@@ -82,11 +94,12 @@ func Save() {
 }
 
 func Dir() {
-    fi, err := ioutil.ReadDir(ZUKI)
+    var err error
+    Fi, err = ioutil.ReadDir(ZUKI)
     if err != nil {
         fmt.Println(err)
     }
-    for i0, fi0 := range fi {
+    for i0, fi0 := range Fi {
         fmt.Println(i0)
         fmt.Printf("File name: %s.\n", fi0.Name())
         fmt.Printf("Size in bytes: %d.\n", fi0.Size())
@@ -94,6 +107,7 @@ func Dir() {
         fmt.Printf("Creation date: %s.\n", fi0.ModTime().Format(time.RFC1123Z))
         fmt.Println(fi0.Sys())
     }
+    /*
     path := ""
     path += ZUKI
     path += "/"
@@ -102,8 +116,9 @@ func Dir() {
     if err0 != nil {
         fmt.Println(err0)
     }
+    */
     // fmt.Println(path, b0, string(b0))
-    fmt.Println(len(b0))
+    // fmt.Println(len(b0))
     // new line byte = 10
 
     // read line by line
@@ -112,6 +127,21 @@ func Dir() {
     // scanner := bufio.NewScanner(file)
     // scanner.Scan()
     // scanner.Text()
+}
+
+func Pop() {
+    // populate ideas file data cache
+    Ideas = make([]*Idea, len(Fi))
+    for i0, f0 := range Fi {
+        path := ""
+        path += ZUKI
+        path += "/"
+        path += f0.Name()
+        id0 := NewIdea()
+        id0.Path = path
+        Ideas[i0] = id0
+        // map name to idea for easy access
+    }
 }
 
 func StatHandler(w http.ResponseWriter, r *http.Request) {
@@ -126,6 +156,14 @@ func StatHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(b0)
 }
 
+func IdeasHandler(w http.ResponseWriter, r *http.Request) {
+    b0, err := json.Marshal(Ideas)
+    if err != nil {
+        fmt.Println(err)
+    }
+    w.Write(b0)
+}
+
 func Web() {
     fmt.Println("listening...")
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -134,6 +172,7 @@ func Web() {
     })
     // register other handlers
     http.HandleFunc("/s", StatHandler)
+    http.HandleFunc("/i", IdeasHandler)
     err := http.ListenAndServe(":8008", nil)
     if err != nil {
         fmt.Println(err)
@@ -152,6 +191,8 @@ func main() {
     Save()
     fmt.Printf("Opening dir: %s.\n", ZUKI)
     Dir()
+    fmt.Println("Populating file data cache")
+    Pop()
     fmt.Println("starting web server on port 8008")
     Web()
     // thread wait after listen is called
