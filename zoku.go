@@ -1,13 +1,16 @@
 package main
 
 import (
+    "bufio"
     "encoding/json"
     "fmt"
+    "io"
     "io/ioutil"
     "math/rand"
     "os"
     "net/http"
     "runtime"
+    "strings"
     "time"
 )
 
@@ -23,7 +26,8 @@ var (
     Start *Starts
     Rng *rand.Rand
     Fi []os.FileInfo
-    Ideas []*Idea
+    // Ideas []*Idea
+    Ideas map[string]*Idea
 )
 
 type Starts struct {
@@ -54,11 +58,52 @@ func (s *Starts) Rand() byte {
 type Idea struct {
     Path string
     Date string
+    Title string
+    Creator string
     Txt []byte
 }
 
 func NewIdea() *Idea {
     return &Idea{}
+}
+
+func (id0 *Idea) Pop() {
+    // after obtaining path
+    // read in file data
+    f0, err := os.Open(id0.Path)
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer f0.Close()
+    b0 := bufio.NewReader(f0)
+    t0, err := b0.ReadString('\n')
+    if err != nil {
+        fmt.Println(err)
+    }
+    t0 = strings.TrimSpace(t0)
+    fmt.Printf("Title is: %s.\n", t0)
+    c0, err := b0.ReadString('\n')
+    if err != nil {
+        fmt.Println(err)
+    }
+    c0 = strings.TrimSpace(c0)
+    fmt.Printf("Creator is: %s.\n", c0)
+    d0, err := b0.ReadString('\n')
+    if err != nil {
+        fmt.Println(err)
+    }
+    d0 = strings.TrimSpace(d0)
+    fmt.Printf("Date is: %s.\n", d0)
+    id0.Title = t0
+    id0.Date = d0
+    id0.Creator = c0
+    s0, err := b0.ReadBytes(255)
+    if err == io.EOF {
+        fmt.Println(err)
+    }
+    fmt.Printf("Bytes: %d.\n", len(s0))
+    // fmt.Printf("Text: %s.\n", string(s0))
+    id0.Txt = s0
 }
 
 func Load() {
@@ -131,15 +176,17 @@ func Dir() {
 
 func Pop() {
     // populate ideas file data cache
-    Ideas = make([]*Idea, len(Fi))
-    for i0, f0 := range Fi {
+    // Ideas = make([]*Idea, len(Fi))
+    Ideas = make(map[string]*Idea)
+    for _, f0 := range Fi {
         path := ""
         path += ZUKI
         path += "/"
         path += f0.Name()
         id0 := NewIdea()
         id0.Path = path
-        Ideas[i0] = id0
+        id0.Pop()
+        Ideas[f0.Name()] = id0
         // map name to idea for easy access
     }
 }
