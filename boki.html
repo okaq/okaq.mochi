@@ -45,6 +45,12 @@ var xhr = {
         console.log("xhr req loaded...");
         console.log(e);
         console.log(xhr.s.response);
+        xhr.d = JSON.parse(xhr.s.response);
+        for (k0 in xhr.d) {
+            console.log(k0);
+            console.log(xhr.d[k0].Txt);
+            console.log(window.atob(xhr.d[k0].Txt));
+        }
     },
     "open": function() {
         // xhr.s.open("GET", "http://localhost:8008/s", true);
