@@ -32,6 +32,34 @@
                 console.log("total running time: " + t1 + " ms");
             }
         }
+// layout
+var lay = {
+    "pop": function() {
+        lay.w = 1920;
+        lay.h = 1080;
+        // navi pane
+        lay.n = [];
+        var i0 = 0;
+        for (var k0 in xhr.d) {
+            var y0 = (i0 * 16) >>> 0;
+            lay.n[i0] = [128,16,0,y0];
+            i0 = i0 + 1;
+        }
+        // idea pane
+        lay.s = [];
+        sce.pop();
+    }
+}
+// scene
+var sce = {
+    "pop": function() {
+        sce.n = [];
+        for (var i = 0; i < sce.n.length; i++) {
+            sce.n[i] = dom.canvas(lay.n[i]);
+            dom.add(sce.n[i]);
+        }
+    }
+}
 // xhr
 var xhr = {
     "init": function() {
@@ -46,11 +74,17 @@ var xhr = {
         console.log(e);
         console.log(xhr.s.response);
         xhr.d = JSON.parse(xhr.s.response);
+        var c0 = 0;
         for (k0 in xhr.d) {
             console.log(k0);
             console.log(xhr.d[k0].Txt);
             console.log(window.atob(xhr.d[k0].Txt));
+            c0 = c0 + 1;
         }
+        console.log("Total ideas: " + c0);
+        // 65 total, 1080 / 65 = 16.6
+        // populate canvas layout with data
+        // add click event listeners
     },
     "open": function() {
         // xhr.s.open("GET", "http://localhost:8008/s", true);
