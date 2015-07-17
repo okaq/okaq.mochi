@@ -62,7 +62,9 @@ var sce = {
         sce.s = dom.canvas(lay.s);
         dom.add(sce.s);
 
-        ren.rand();
+        // ren.rand();
+        ren.navi();
+        ren.intro();
     }
 }
 // render
@@ -74,6 +76,47 @@ var ren = {
         }
         sce.s.con.fillStyle = rgba.css(rgba.rc());
         sce.s.con.fillRect(0,0,sce.s.can.width,sce.s.can.height);
+    },
+    "clear": function() {
+        var c0 = rgba.css([255,255,255,1.0]);
+        for (var i = 0; i < sce.n.length; i++) {
+            sce.n[i].con.fillStyle = c0;
+            sce.n[i].con.fillRect(0,0,sce.n[i].can.width,sce.n[i].can.height);
+        }
+        sce.s.con.fillStyle = c0;
+        sce.s.con.fillRect(0,0,sce.s.can.width,sce.s.can.height);
+    },
+    "navi": function() {
+        var c0 = rgba.css([225,225,225,1.0]);
+        for (var i = 0; i < sce.n.length; i++) {
+            sce.n[i].con.fillStyle = c0;
+            sce.n[i].con.fillRect(0,0,sce.n[i].can.width,sce.n[i].can.height);
+        }
+
+        var i0 = 0;
+        var c1 = rgba.css([25,25,25,1.0]);
+        for (var k0 in xhr.d) {
+            sce.n[i0].con.fillStyle = c1;
+            sce.n[i0].con.font = "16px sans-serif";
+            sce.n[i0].con.fillText(k0, 2, 2);
+            // sce.n[i0].con.fillText(xhr.d[k0].Title);
+            i0 = i0 + 1;
+        }
+    },
+    "intro": function() {
+        var w0 = 1792;
+        var h0 = 1080;
+        var x0 = 0;
+        var y0 = 0;
+        var m0 = 64;
+        while (h0 >= m0) {
+            sce.s.con.fillStyle = rgba.css(rgba.rc());
+            sce.s.con.fillRect(x0, y0, w0, h0);
+            w0 = w0 - (2 * m0);
+            h0 = h0 - (2 * m0);
+            x0 = x0 + m0;
+            y0 = y0 + m0;
+        }
     }
 }
 // dom
@@ -128,6 +171,7 @@ var xhr = {
         lay.pop();
     },
     "open": function() {
+        window.removeEventListener("click", xhr.open, false);
         // xhr.s.open("GET", "http://localhost:8008/s", true);
         xhr.s.open("GET", "http://localhost:8008/i", true)
         xhr.s.send();
