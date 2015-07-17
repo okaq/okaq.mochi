@@ -56,7 +56,7 @@ var lay = {
             i0 = i0 + 1;
         }
         // idea pane
-        lay.s = [1664,1080,256,0];
+        lay.s = [1664,4096,256,0];
         sce.pop();
     }
 }
@@ -70,7 +70,7 @@ var sce = {
             sce.n[i].can.dataset.x = lay.n[i].x;
             sce.n[i].can.addEventListener("click", m.choose, false);
         }
-        console.log(sce.n, lay.n);
+        // console.log(sce.n, lay.n);
         sce.s = dom.canvas(lay.s);
         dom.add(sce.s);
 
@@ -134,11 +134,24 @@ var ren = {
         sce.s.con.fillStyle = rgba.css([215,215,215,1.0]);
         sce.s.con.fillRect(0,0,sce.s.can.width,sce.s.can.height);
         sce.s.con.fillStyle = rgba.css([35,35,35,1.0]);
-        sce.s.con.font = "20px monospace";
-        sce.s.con.fillText(xhr.d[k0].Dec, 2, 100);
+        sce.s.con.font = "28px monospace";
+        sce.s.con.fillText(xhr.d[k0].Title, 8, 100);
+        sce.s.con.font = "26px monospace";
+        sce.s.con.fillText(xhr.d[k0].Creator, 8, 200);
+        sce.s.con.font = "24px monospace";
+        sce.s.con.fillText(xhr.d[k0].Date, 8, 300);
+        sce.s.con.font = "22px monospace";
+        var s0 = xhr.d[k0].Dec.split("\n");
+        for (var i = 0; i < s0.length; i++) {
+            var y0 = (400 + (i * 64)) >>> 0;
+            sce.s.con.fillText(s0[i], 8, y0, 1648);
+        }
+        // sce.s.con.fillText(xhr.d[k0].Dec, 8, 400);
         // no multiline support in canvas
         // require wrap text call
         // lines = txt.split("\n")
+        // set max width
+        // doc format requires reasonable line breaks
     }
 }
 // dom
@@ -177,17 +190,17 @@ var xhr = {
     "load": function(e) {
         console.log("xhr req loaded...");
         console.log(e);
-        console.log(xhr.s.response);
+        // console.log(xhr.s.response);
         xhr.d = JSON.parse(xhr.s.response);
         var c0 = 0;
         for (k0 in xhr.d) {
-            console.log(k0);
+            // console.log(k0);
             // console.log(xhr.d[k0].Txt);
             // console.log(window.atob(xhr.d[k0].Txt));
             xhr.d[k0].Dec = window.atob(xhr.d[k0].Txt);
             c0 = c0 + 1;
         }
-        console.log("Total ideas: " + c0);
+        // console.log("Total ideas: " + c0);
         // 65 total, 1080 / 65 = 16.6
         // populate canvas layout with data
         // add click event listeners
