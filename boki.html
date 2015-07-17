@@ -30,6 +30,14 @@
 
                 var t1 = window.performance.now() - t0;
                 console.log("total running time: " + t1 + " ms");
+            },
+            "choose": function(e) {
+                console.log(e);
+                console.log(e.target.dataset.x);
+                // selection var to highlight navi on click
+                ren.clear();
+                ren.navi();
+                ren.txt(e.target.dataset.x);
             }
         }
 // layout
@@ -40,13 +48,15 @@ var lay = {
         // navi pane
         lay.n = [];
         var i0 = 0;
+        var h0 = 64;
         for (var k0 in xhr.d) {
-            var y0 = (i0 * 16) >>> 0;
-            lay.n[i0] = [128,16,0,y0];
+            var y0 = (i0 * h0) >>> 0;
+            lay.n[i0] = [256,h0,0,y0];
+            lay.n[i0].x = k0;
             i0 = i0 + 1;
         }
         // idea pane
-        lay.s = [1792,1080,128,0];
+        lay.s = [1664,1080,256,0];
         sce.pop();
     }
 }
@@ -57,6 +67,8 @@ var sce = {
         for (var i = 0; i < lay.n.length; i++) {
             sce.n[i] = dom.canvas(lay.n[i]);
             dom.add(sce.n[i]);
+            sce.n[i].can.dataset.x = lay.n[i].x;
+            sce.n[i].can.addEventListener("click", m.choose, false);
         }
         console.log(sce.n, lay.n);
         sce.s = dom.canvas(lay.s);
@@ -98,13 +110,13 @@ var ren = {
         for (var k0 in xhr.d) {
             sce.n[i0].con.fillStyle = c1;
             sce.n[i0].con.font = "16px sans-serif";
-            sce.n[i0].con.fillText(k0, 2, 2);
+            sce.n[i0].con.fillText(k0, 4, 32);
             // sce.n[i0].con.fillText(xhr.d[k0].Title);
             i0 = i0 + 1;
         }
     },
     "intro": function() {
-        var w0 = 1792;
+        var w0 = 1664;
         var h0 = 1080;
         var x0 = 0;
         var y0 = 0;
@@ -117,6 +129,16 @@ var ren = {
             x0 = x0 + m0;
             y0 = y0 + m0;
         }
+    },
+    "txt": function(k0) {
+        sce.s.con.fillStyle = rgba.css([215,215,215,1.0]);
+        sce.s.con.fillRect(0,0,sce.s.can.width,sce.s.can.height);
+        sce.s.con.fillStyle = rgba.css([35,35,35,1.0]);
+        sce.s.con.font = "20px monospace";
+        sce.s.con.fillText(xhr.d[k0].Dec, 2, 100);
+        // no multiline support in canvas
+        // require wrap text call
+        // lines = txt.split("\n")
     }
 }
 // dom
@@ -160,8 +182,9 @@ var xhr = {
         var c0 = 0;
         for (k0 in xhr.d) {
             console.log(k0);
-            console.log(xhr.d[k0].Txt);
-            console.log(window.atob(xhr.d[k0].Txt));
+            // console.log(xhr.d[k0].Txt);
+            // console.log(window.atob(xhr.d[k0].Txt));
+            xhr.d[k0].Dec = window.atob(xhr.d[k0].Txt);
             c0 = c0 + 1;
         }
         console.log("Total ideas: " + c0);
